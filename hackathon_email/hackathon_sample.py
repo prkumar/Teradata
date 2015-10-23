@@ -8,7 +8,7 @@ import zlib
 # Overall WS Access Variables
 dbsAlias = 'xTD150'
 wsHost = 'dragon.teradata.ws'
-wsPort =  '1080'
+wsPort = '1080'
 path = '/tdrest/systems/' + dbsAlias + '/queries'
 
 
