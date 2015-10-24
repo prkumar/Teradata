@@ -57,7 +57,7 @@ def request(query, user, pw, rowLimit=1000):
     return results
 
 
-def grab_portland_crime_data(size=1000, just_data=True):
+def grab_portland_crime_data(size=1000, just_data=True, field="*"):
     import os
     fn = os.path.join('portland_crime_data', str(size))
     try:
