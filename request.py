@@ -59,9 +59,11 @@ if __name__ == '__main__':
     wsPass = 'tdhackathon'
 
     # printing portland crime
-    json.dumps(request('select * from crime_data.portland_crime', wsUser, wsPass))
+    print json.dumps(request('select * from crime_data.portland_crime', wsUser, wsPass), indent=4, sort_keys=True)
 
     # looking for min, max x and y
+    xs = []
+    ys = []
     for data in request('select * from crime_data.portland_crime', wsUser, wsPass)["results"][0]["data"]:
         xs.append(data[-2])
         ys.append(data[-1])
