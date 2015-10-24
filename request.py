@@ -58,13 +58,15 @@ if __name__ == '__main__':
     wsUser = 'hack_user11'
     wsPass = 'tdhackathon'
 
-    player_ids = []
-    print request('select * from crime_data.portland_crime', wsUser, wsPass)["results"][0]["data"]
-    # for data in request('select * from crime_data.portland_crime', wsUser, wsPass)["results"][0]["data"]:
-    #     if data[0] not in player_ids:
-    #         player_ids.append(data[0])
-    #
-    # print len(player_ids)
+    # printing portland crime
+    json.dumps(request('select * from crime_data.portland_crime', wsUser, wsPass))
+
+    # looking for min, max x and y
+    for data in request('select * from crime_data.portland_crime', wsUser, wsPass)["results"][0]["data"]:
+        xs.append(data[-2])
+        ys.append(data[-1])
+
+    print len(xs), len(ys)
 
 
 
