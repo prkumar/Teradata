@@ -58,3 +58,5 @@ if __name__ == '__main__':
     wsUser = 'hack_user11'
     wsPass = 'tdhackathon'
     request('select * from crime_data.murders_by_weapon_type', wsUser, wsPass)
+
+
