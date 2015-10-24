@@ -1,4 +1,4 @@
-#!/usr/bin/python
+﻿#!/usr/bin/python
 
 import json
 import urllib2
@@ -73,6 +73,7 @@ if __name__ == '__main__':
     with open('portland_crime_data_1000', 'r') as stream:
         response = json.load(stream)
 
+<<<<<<< HEAD
 
     # looking for min, max x and y
     data = response['results'][0]['data']
@@ -95,6 +96,10 @@ if __name__ == '__main__':
             ys_max = y
 
     print xs_min, xs_max, ys_min, ys_max
+=======
+    print max(xs), max(ys)
+    print min(xs), min(ys)
+>>>>>>> origin/master
 
 
 
