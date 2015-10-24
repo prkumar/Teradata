@@ -52,11 +52,20 @@ def request(query, user, pw):
     # Parse response to confirm value JSON.
     results = json.loads(response)
 
-    print json.dumps(results, indent=4, sort_keys=True)
+    return results
 
 if __name__ == '__main__':
     wsUser = 'hack_user11'
     wsPass = 'tdhackathon'
-    request('select * from crime_data.murders_by_weapon_type', wsUser, wsPass)
+
+    player_ids = []
+    print request('select * from crime_data.portland_crime', wsUser, wsPass)["results"][0]["data"]
+    # for data in request('select * from crime_data.portland_crime', wsUser, wsPass)["results"][0]["data"]:
+    #     if data[0] not in player_ids:
+    #         player_ids.append(data[0])
+    #
+    # print len(player_ids)
+
+
 
 
