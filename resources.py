@@ -12,56 +12,49 @@ wsPort = '1080'
 path = '/tdrest/systems/' + dbsAlias + '/queries'
 
 
-
-def rest_request ( query ,wsUser,wsPass):
+def request(query, user, pw):
     url = 'http://' + wsHost + ':' + wsPort + path
    
-    headers={}
+    headers = dict()
     headers['Content-Type'] = 'application/json'
     headers['Accept'] = 'application/vnd.com.teradata.rest-v1.0+json'
-    headers['Authorization'] = "Basic %s" % base64.encodestring('%s:%s' % (wsUser, wsPass)).replace('\n', '');
+    headers['Authorization'] = "Basic %s" % base64.encodestring('%s:%s' % (user, pw)).replace('\n', '');
 
     # Set query bands
-    queryBands = {}
+    queryBands = dict()
     queryBands['applicationName'] = 'MyApp'
     queryBands['version'] = '1.0'
 
     # Set request fields. including SQL
-    data = {}
+    data = dict()
     data['query'] = query
     data['queryBands'] = queryBands
     data['format'] = 'array'
 
     # Build request.
-    request = urllib2.Request(url, json.dumps(data), headers)
+    req = urllib2.Request(url, json.dumps(data), headers)
 
-    #Submit request
+    # Submit request
     try:
-        response = urllib2.urlopen(request);
+        response = urllib2.urlopen(req)
         # Check if result have been compressed.
         if response.info().get('Content-Encoding') == 'gzip':
-            response = zlib.decompress(response.read(), 16+zlib.MAX_WBITS)
+            response = zlib.decompress(response.read(), 16 + zlib.MAX_WBITS)
         else:
-            response = response.read();
+            response = response.read()
     except urllib2.HTTPError, e:
         print 'HTTPError = ' + str(e.code)
-        response = e.read();
+        response = e.read()
     except urllib2.URLError, e:
         print 'URLError = ' + str(e.reason)
-        response = e.read();
+        response = e.read()
 
     # Parse response to confirm value JSON.
-    results = json.loads(response);
+    results = json.loads(response)
 
-    print json.dumps(results, indent=4, sort_keys=True) 
+    print json.dumps(results, indent=4, sort_keys=True)
 
-    return;
-
-def perform_query( query, wsUser, wsPass ):
-    rest_request(query, wsUser, wsPass)
-    
-    return;
-
-wsUser = 'hack_user02'
-wsPass = 'tdhackathon'
-perform_query ( 'select * from crime_data.murders_by_weapon_type', wsUser, wsPass)
+if __name__ == '__main__':
+    wsUser = 'hack_user11'
+    wsPass = 'tdhackathon'
+    request('select * from crime_data.murders_by_weapon_type', wsUser, wsPass)
