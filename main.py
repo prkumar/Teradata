@@ -1,4 +1,3 @@
-from request import request
 from portland import grab_portland_crime_data
 from portland import get_bounds
 import matplotlib.pyplot as plt
@@ -10,8 +9,8 @@ def get_points( filter ):
     global x_data, y_data
     for n in grab_portland_crime_data(size=10000):
         try:
-            x = int(n[-2])
-            y = int(n[-1])
+            x = int(n.longitude)
+            y = int(n.latitude)
         except:
             continue
         if n[3] == filter:

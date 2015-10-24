@@ -3,7 +3,7 @@ import json
 from request import request, wsUser, wsPass
 
 
-def grab_portland_crime_data(size=1000):
+def grab_portland_crime_data(size=100):
     import os
     fn = os.path.join('portland_crime_data', str(size))
     try:
@@ -14,8 +14,12 @@ def grab_portland_crime_data(size=1000):
         with open(fn, 'w') as out:
             json.dump(resp, out)
     data = []
-    for point in resp['results'][0]['data']:
-        data.append(CrimeReport(point))
+    length = len(resp['results'][0]['data'])
+    for i, point in enumerate(resp['results'][0]['data']):
+        coords = get_coords(point[4])
+        if coords is not None:
+            data.append(CrimeReport(point[1], point[3], coords))
+        print str(float(i + 1)/length * 100) + '%'
     return data
 
 
@@ -36,7 +40,7 @@ def get_bounds(data):
             ys_min = y
         if y > ys_max:
             ys_max = y
-    print xs_min, xs_max, ys_min, ys_max
+    return xs_min, xs_max, ys_min, ys_max
 
 
 def get_coords(value):
@@ -68,30 +72,19 @@ def get_coords(value):
 
 
 class CrimeReport(object):
-    def __init__(self, data):
+    def __init__(self, rd, mot, coords):
         # self.record_id = data[0]
-        self.report_date = data[1]
+        self.report_date = rd
         # self.report_time = data[2]
-        self.major_offense_type = data[3]
-        self.address = data[4]
-        # self.police_precinct = data[5]
-        # self.police_district = data[6]
-        self.x = data[7]
-        self.y = data[8]
-        self.__addresses = None
-
-    @property
-    def longitudes(self):
-        if self.__addresses is None:
-            self.__addresses = get_coords(self.address)
-        return self.__addresses['longitudes']
-
-    @property
-    def latitudes(self):
-        if self.__addresses is None:
-            self.__addresses = get_coords(self.address)
-        return self.__addresses['latitudes']
-
+        self.major_offense_type = mot
+        # self.neighborhood = data[5]
+        # self.police_precinct = data[6]
+        # self.police_district = data[7]
+        self.address = coords['full addresses']
+        self.longitudes = coords['longitudes']
+        self.latitudes = coords['latitudes']
+        self.x = min(self.longitudes)
+        self.y = min(self.latitudes)
 
 if __name__ == '__main__':
     # grab data
@@ -99,9 +92,6 @@ if __name__ == '__main__':
     print response
 
     # print min and max of x and y for data
-    get_bounds(response)
+    print get_bounds(response)
 
-    # grabbing long and lat
-    for x in response:
-        print x[4]
-        print get_coords(x[4])
+
