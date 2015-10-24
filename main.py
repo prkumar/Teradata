@@ -1,11 +1,13 @@
 from portland import grab_portland_crime_data
-from portland import get_bounds
 import matplotlib.pyplot as plt
 
 x_data=[]
 y_data=[]
 
-def get_points( filter ):
+LATCOEF = 168680.5064887113
+LONGCOEF = -5640.630632788689
+
+def get_points(filter):
     global x_data, y_data
     for n in grab_portland_crime_data(size=200000):
 
@@ -15,15 +17,15 @@ def get_points( filter ):
         except:
             continue
         if n[3] == filter:
-            x_data = x_data + [x]
-            y_data = y_data + [y]
+            x_data = x_data + [x/LATCOEF]
+            y_data = y_data + [y/LONGCOEF]
 
 def plot_by_type( type, color ):
     global x_data, y_data
     x_data=[]
     y_data=[]
     get_points(type)
-    plt.plot( x_data, y_data, color)
+    plt.plot(x_data, y_data, color)
 
 plot_by_type( "Aggravated Assault", "ks" )
 plot_by_type( "Assault, Simple", "ko" )
