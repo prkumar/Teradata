@@ -1,4 +1,4 @@
-#!/usr/bin/python
+﻿#!/usr/bin/python
 
 import json
 import urllib2
@@ -30,6 +30,7 @@ def request(query, user, pw):
     data['query'] = query
     data['queryBands'] = queryBands
     data['format'] = 'array'
+    data['rowLimit'] = 1000
 
     # Build request.
     req = urllib2.Request(url, json.dumps(data), headers)
@@ -68,7 +69,8 @@ if __name__ == '__main__':
         xs.append(data[-2])
         ys.append(data[-1])
 
-    print len(xs), len(ys)
+    print max(xs), max(ys)
+    print min(xs), min(ys)
 
 
 
