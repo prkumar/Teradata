@@ -1,6 +1,6 @@
 from request import request
-from request import grab_portland_crime_data
-from request import get_bounds
+from portland import grab_portland_crime_data
+from portland import get_bounds
 import matplotlib.pyplot as plt
 
 x_data=[]
