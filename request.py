@@ -57,7 +57,7 @@ def request(query, user, pw, rowLimit=1000):
     return results
 
 
-def grab_portland_crime_data(size=1000, just_data=True, field="*"):
+def grab_portland_crime_data(size=1000, just_data=True):
     import os
     fn = os.path.join('portland_crime_data', str(size))
     try:
@@ -65,7 +65,7 @@ def grab_portland_crime_data(size=1000, just_data=True, field="*"):
             resp = json.load(stream)
     except IOError:
         resp = request('select * from crime_data.portland_crime', wsUser, wsPass, rowLimit=size)
-        with open('fn', 'w') as out:
+        with open(fn, 'w') as out:
             json.dump(resp, out)
     if just_data:
         resp = resp['results'][0]['data']
@@ -73,8 +73,8 @@ def grab_portland_crime_data(size=1000, just_data=True, field="*"):
 
 
 def get_bounds(data):
-    xs_min = xs_max = int(data[0][-2])
-    ys_min = ys_max = int(data[0][-1])
+    xs_min = xs_max = data[0][-2]
+    ys_min = ys_max = data[0][-1]
     for n in data[1:]:
         try:
             x = float(n[-1])
@@ -82,11 +82,55 @@ def get_bounds(data):
         except:
             continue
         if x < xs_min:
-            xs_min = int(x)
+            xs_min = x
         if x > xs_max:
-            xs_max = int(x)
+            xs_max = x
         if y < ys_min:
-            ys_min = int(y)
+            ys_min = y
         if y > ys_max:
-            ys_max = int(y)
-    return [xs_min, xs_max, ys_min, ys_max]
+            ys_max = y
+    print xs_min, xs_max, ys_min, ys_max
+
+
+def get_coords(value):
+    if ' and ' in value:
+        addresses = value.split(' and ')
+    elif ' block of ' in value:
+        coords = value.split(' ')
+        address = ' '.join(coords[3:])
+        street_numbers = coords[0].split('-')
+        addresses = (street_numbers[0] + ' ' + address, street_numbers[1] + ' ' + address)
+    else:
+        addresses = (value, value)
+    from geopy.geocoders import Nominatim
+    geolocator = Nominatim(timeout=None)
+    loc1 = geolocator.geocode(addresses[0], timeout=None)
+    loc2 = geolocator.geocode(addresses[1], timeout=None)
+    if loc1 is None:
+        if loc2 is None:
+            return None
+        else:
+            loc1 = loc2
+    if loc2 is None:
+        loc2 = loc1
+    return {'addresses': addresses,
+            'full addresses': (loc1.address, loc2.address),
+            'longitudes': (loc1.longitude, loc2.longitude),
+            'latitudes': (loc1.latitude, loc2.latitude)
+            }
+
+if __name__ == '__main__':
+    # grab data
+    response = grab_portland_crime_data()
+    print response
+
+    # print min and max of x and y for data
+    get_bounds(response)
+
+    # grabbing long and lat
+    for x in response:
+        print x[4]
+        print get_coords(x[4])
+
+
+
