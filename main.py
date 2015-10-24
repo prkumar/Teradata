@@ -4,9 +4,6 @@ import matplotlib.pyplot as plt
 x_data=[]
 y_data=[]
 
-LATCOEF = 168680.5064887113
-LONGCOEF = -5640.630632788689
-
 def color_by_type(type):
     if (type=="Drugs"):
         return "ro"
@@ -37,7 +34,7 @@ def color_by_type(type):
 image = plt.imread('portland.png')
 plt.imshow(image, zorder=0, extent=[7600000, 7720000 , 620000 , 740000])
 
-for n in grab_portland_crime_data(size=10000):
+for n in grab_portland_crime_data(size=50000):
     try:
         x = int(n[-2])
         y = int(n[-1])
@@ -46,10 +43,7 @@ for n in grab_portland_crime_data(size=10000):
         continue
     x_data = [x]
     y_data = [y]
-    plt.plot(x_data, y_data, color_by_type(crime))
 
-
-
-#plt.axis(get_bounds(grab_portland_crime_data()))
-plt.axis([7600000, 7720000, 620000 , 740000])
+    plt.plot(x_data, y_data, color_by_type(crime), alpha=0.42)
+plt.axis([7600000, 7720000, 620000, 740000])
 plt.show()
