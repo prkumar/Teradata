@@ -35,40 +35,30 @@ def get_bounds(data):
             ys_max = y
     return xs_min, xs_max, ys_min, ys_max
 
-
-def get_coords(value):
-    if ' and ' in value:
-        addresses = value.split(' and ')
-    elif ' block of ' in value:
-        coords = value.split(' ')
-        address = ' '.join(coords[3:])
-        street_numbers = coords[0].split('-')
-        addresses = (street_numbers[0] + ' ' + address, street_numbers[1] + ' ' + address)
-    else:
-        addresses = (value, value)
-    from geopy.geocoders import Nominatim
-    geolocator = Nominatim(timeout=None)
-    loc1 = geolocator.geocode(addresses[0], timeout=None)
-    loc2 = geolocator.geocode(addresses[1], timeout=None)
-    if loc1 is None:
-        if loc2 is None:
-            return None
-        else:
-            loc1 = loc2
-    if loc2 is None:
-        loc2 = loc1
-    return {'addresses': addresses,
-            'full addresses': (loc1.address, loc2.address),
-            'longitudes': (loc1.longitude, loc2.longitude),
-            'latitudes': (loc1.latitude, loc2.latitude)
-            }
-
-if __name__ == '__main__':
-    # grab data
-    response = grab_portland_crime_data()
-    print response
-
-    # print min and max of x and y for data
-    print get_bounds(response)
-
+# def get_coords(value):
+#     if ' and ' in value:
+#         addresses = value.split(' and ')
+#     elif ' block of ' in value:
+#         coords = value.split(' ')
+#         address = ' '.join(coords[3:])
+#         street_numbers = coords[0].split('-')
+#         addresses = (street_numbers[0] + ' ' + address, street_numbers[1] + ' ' + address)
+#     else:
+#         addresses = (value, value)
+#     from geopy.geocoders import Nominatim
+#     geolocator = Nominatim(timeout=None)
+#     loc1 = geolocator.geocode(addresses[0], timeout=None)
+#     loc2 = geolocator.geocode(addresses[1], timeout=None)
+#     if loc1 is None:
+#         if loc2 is None:
+#             return None
+#         else:
+#             loc1 = loc2
+#     if loc2 is None:
+#         loc2 = loc1
+#     return {'addresses': addresses,
+#             'full addresses': (loc1.address, loc2.address),
+#             'longitudes': (loc1.longitude, loc2.longitude),
+#             'latitudes': (loc1.latitude, loc2.latitude)
+#             }
 

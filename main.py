@@ -7,7 +7,7 @@ y_data=[]
 
 def get_points( filter ):
     global x_data, y_data
-    for n in grab_portland_crime_data(size=100):
+    for n in grab_portland_crime_data(size=1000):
         try:
             x = int(n[-2])
             y = int(n[-1])
