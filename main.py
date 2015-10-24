@@ -34,18 +34,22 @@ def color_by_type(type):
         return "ko"
     return "k."
 
-for n in grab_portland_crime_data(size=20000):
+image = plt.imread('portland.png')
+plt.imshow(image, zorder=0, extent=[7600000, 7720000 , 620000 , 740000])
+
+for n in grab_portland_crime_data(size=10000):
     try:
         x = int(n[-2])
         y = int(n[-1])
         crime = n[3]
     except:
         continue
-    x_data = [x/LATCOEF]
-    y_data = [y/LONGCOEF]
+    x_data = [x]
+    y_data = [y]
     plt.plot(x_data, y_data, color_by_type(crime))
 
 
+
 #plt.axis(get_bounds(grab_portland_crime_data()))
-plt.axis([7600000 / LATCOEF, 7720000 / LATCOEF, 620000 / LONGCOEF, 740000 / LONGCOEF])
+plt.axis([7600000, 7720000, 620000 , 740000])
 plt.show()
