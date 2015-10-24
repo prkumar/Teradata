@@ -10,9 +10,10 @@ dbsAlias = 'xTD150'
 wsHost = 'dragon.teradata.ws'
 wsPort = '1080'
 path = '/tdrest/systems/' + dbsAlias + '/queries'
+wsUser = 'hack_user11'
+wsPass = 'tdhackathon'
 
-
-def request(query, user, pw):
+def request(query, user, pw, rowLimit=1000):
     url = 'http://' + wsHost + ':' + wsPort + path
    
     headers = dict()
@@ -30,7 +31,7 @@ def request(query, user, pw):
     data['query'] = query
     data['queryBands'] = queryBands
     data['format'] = 'array'
-    data['rowLimit'] = 1000
+    data['rowLimit'] = rowLimit
 
     # Build request.
     req = urllib2.Request(url, json.dumps(data), headers)
@@ -55,26 +56,23 @@ def request(query, user, pw):
 
     return results
 
+
+def grab_portland_crime_data(size=1000, just_data=True):
+    import os
+    fn = os.path.join('portland_crime_data', str(size))
+    try:
+        with open(fn, 'r') as stream:
+            resp = json.load(stream)
+    except IOError:
+        resp = request('select * from crime_data.portland_crime', wsUser, wsPass, rowLimit=size)
+        with open('fn', 'w') as out:
+            json.dump(resp, out)
+    if just_data:
+        resp = resp['results'][0]['data']
+    return resp
+            
 if __name__ == '__main__':
-    wsUser = 'hack_user11'
-    wsPass = 'tdhackathon'
-
-    # get data
-    # response = request('select * from crime_data.portland_crime', wsUser, wsPass)
-
-    # printing portland crime
-    # print json.dumps(response, indent=4, sort_keys=True)
-
-    # saving data
-    # with open('portland_crime_data_1000', 'w') as stream:
-    #     json.dump(response, stream)
-    # print('dumped!')
-
-    with open('portland_crime_data_1000', 'r') as stream:
-        response = json.load(stream)
-
-    # looking for min, max x and y
-    data = response['results'][0]['data']
+    data = grab_portland_crime_data(2000)
     xs_min = xs_max = data[0][-2]
     ys_min = ys_max = data[0][-1]
     for n in data[1:]:
