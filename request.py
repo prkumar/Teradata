@@ -70,9 +70,9 @@ def grab_portland_crime_data(size=1000, just_data=True):
     if just_data:
         resp = resp['results'][0]['data']
     return resp
-            
-if __name__ == '__main__':
-    data = grab_portland_crime_data(2000)
+
+
+def get_bounds(data):
     xs_min = xs_max = data[0][-2]
     ys_min = ys_max = data[0][-1]
     for n in data[1:]:
@@ -81,7 +81,6 @@ if __name__ == '__main__':
             y = float(n[-2])
         except:
             continue
-
         if x < xs_min:
             xs_min = x
         if x > xs_max:
@@ -90,9 +89,7 @@ if __name__ == '__main__':
             ys_min = y
         if y > ys_max:
             ys_max = y
-
     print xs_min, xs_max, ys_min, ys_max
-
 
 
 
