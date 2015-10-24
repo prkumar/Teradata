@@ -7,7 +7,8 @@ y_data=[]
 
 def get_points( filter ):
     global x_data, y_data
-    for n in grab_portland_crime_data(size=1000):
+    for n in grab_portland_crime_data(size=200000):
+
         try:
             x = int(n[-2])
             y = int(n[-1])
@@ -37,5 +38,6 @@ plot_by_type( "Robbery", "gs" )
 plot_by_type( "Trespass", "cs" )
 plot_by_type( "Vandalism", "co" )
 
-plt.axes(get_bounds(grab_portland_crime_data()))
+#plt.axis(get_bounds(grab_portland_crime_data()))
+plt.axis([7600000, 7720000, 620000, 740000])
 plt.show()
