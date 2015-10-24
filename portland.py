@@ -3,7 +3,7 @@ import json
 from request import request, wsUser, wsPass
 
 
-def grab_portland_crime_data(size=100):
+def grab_portland_crime_data(size=1000):
     import os
     fn = os.path.join('portland_crime_data', str(size))
     try:
@@ -13,23 +13,16 @@ def grab_portland_crime_data(size=100):
         resp = request('select * from crime_data.portland_crime', wsUser, wsPass, rowLimit=size)
         with open(fn, 'w') as out:
             json.dump(resp, out)
-    data = []
-    length = len(resp['results'][0]['data'])
-    for i, point in enumerate(resp['results'][0]['data']):
-        coords = get_coords(point[4])
-        if coords is not None:
-            data.append(CrimeReport(point[1], point[3], coords))
-        print str(float(i + 1)/length * 100) + '%'
-    return data
+    return resp['results'][0]['data']
 
 
 def get_bounds(data):
-    xs_min = xs_max = data[0].x
-    ys_min = ys_max = data[0].y
+    xs_min = xs_max = data[0][-2]
+    ys_min = ys_max = data[0][-1]
     for n in data[1:]:
         try:
-            x = float(n.x)
-            y = float(n.y)
+            x = float(n[-2])
+            y = float(n[-1])
         except:
             continue
         if x < xs_min:
@@ -69,22 +62,6 @@ def get_coords(value):
             'longitudes': (loc1.longitude, loc2.longitude),
             'latitudes': (loc1.latitude, loc2.latitude)
             }
-
-
-class CrimeReport(object):
-    def __init__(self, rd, mot, coords):
-        # self.record_id = data[0]
-        self.report_date = rd
-        # self.report_time = data[2]
-        self.major_offense_type = mot
-        # self.neighborhood = data[5]
-        # self.police_precinct = data[6]
-        # self.police_district = data[7]
-        self.address = coords['full addresses']
-        self.longitudes = coords['longitudes']
-        self.latitudes = coords['latitudes']
-        self.x = min(self.longitudes)
-        self.y = min(self.latitudes)
 
 if __name__ == '__main__':
     # grab data

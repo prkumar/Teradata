@@ -7,10 +7,10 @@ y_data=[]
 
 def get_points( filter ):
     global x_data, y_data
-    for n in grab_portland_crime_data(size=10000):
+    for n in grab_portland_crime_data(size=100):
         try:
-            x = int(n.longitude)
-            y = int(n.latitude)
+            x = int(n[-2])
+            y = int(n[-1])
         except:
             continue
         if n[3] == filter:
